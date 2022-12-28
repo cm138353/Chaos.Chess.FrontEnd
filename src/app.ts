@@ -1,19 +1,23 @@
+import { RequestInit } from 'aurelia-fetch-client';
 import { autoinject } from 'aurelia-framework';
-import { Client } from 'NSwag/chess_swagger';
+import { ChessClient } from 'NSwag/chess_swagger';
 
 @autoinject()
 export class App {
   public message = 'Hello World!';
-
-
+  public user;
+  public _chessClient: ChessClient;
   constructor(
-    public _client: Client
+    
   ){
-
+    this._chessClient = new ChessClient("https://localhost:44385");
   }
 
 
-  public attached() {
-    this._client.usersGET()
+  public async attached() {
+    let response = await this._chessClient.getCurrentGame();
+
+    console.log(response);
+    
   }
 }
