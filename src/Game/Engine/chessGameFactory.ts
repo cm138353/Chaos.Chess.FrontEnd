@@ -1,18 +1,22 @@
+import { ChessGameStringType } from './chessGameStringType';
 import { ChessGame } from './chessGame';
 
 export class ChessGameFactory implements IChessGameFactory {
 
+    constructor() {
 
-    NewStandardGame(): ChessGame {
+
+    }
+    public NewStandardGame(): ChessGame {
         return new ChessGame();
     }
 
-    NewFromFEN(fen: string): ChessGame {
-        throw new Error('Method not implemented.');
+    public NewFromFEN(fen: string): ChessGame {
+        return new ChessGame(fen, ChessGameStringType.fen);
     }
 
-    NewFromPGN(pgn: string): ChessGame {
-        throw new Error('Method not implemented.');
+    public NewFromSAN(san: string): ChessGame {
+        return new ChessGame(san, ChessGameStringType.san);
     }
 }
 
@@ -21,5 +25,5 @@ export interface IChessGameFactory {
 
     NewStandardGame(): ChessGame;
     NewFromFEN(fen: string): ChessGame;
-    NewFromPGN(pgn: string): ChessGame;
+    NewFromSAN(pgn: string): ChessGame;
 }

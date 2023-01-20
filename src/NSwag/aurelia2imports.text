@@ -1,0 +1,2 @@
+import { inject } from 'aurelia';
+import { HttpClient } from '@aurelia/fetch-client';

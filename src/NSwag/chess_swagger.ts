@@ -7,9 +7,9 @@
 /* tslint:disable */
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
-
 import { inject } from 'aurelia';
 import { HttpClient } from '@aurelia/fetch-client';
+
 @inject(String, HttpClient)
 export class ChessClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
@@ -1025,7 +1025,7 @@ export class ChessClient {
     /**
      * @return Success
      */
-    getCurrentGame(signal?: AbortSignal | undefined): Promise<string> {
+    getCurrentGame(signal?: AbortSignal | undefined): Promise<ChessGameDto> {
         let url_ = this.baseUrl + "/api/Chess/Game/get-current-game";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1042,15 +1042,14 @@ export class ChessClient {
         });
     }
 
-    protected processGetCurrentGame(response: Response): Promise<string> {
+    protected processGetCurrentGame(response: Response): Promise<ChessGameDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
                 let result200: any = null;
                 let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+                result200 = ChessGameDto.fromJS(resultData200);
                 return result200;
             });
         } else if (status === 403) {
@@ -1100,7 +1099,90 @@ export class ChessClient {
                 return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(null as any);
+        return Promise.resolve<ChessGameDto>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    chessGame(id: string, signal?: AbortSignal | undefined): Promise<ChessGameDto> {
+        let url_ = this.baseUrl + "/api/app/game/{id}/chess-game";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processChessGame(_response);
+        });
+    }
+
+    protected processChessGame(response: Response): Promise<ChessGameDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = ChessGameDto.fromJS(resultData200);
+                return result200;
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+                let result403: any = null;
+                let resultData403 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result403 = RemoteServiceErrorResponse.fromJS(resultData403);
+                return throwException("Forbidden", status, _responseText, _headers, result403);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+                let result401: any = null;
+                let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result401 = RemoteServiceErrorResponse.fromJS(resultData401);
+                return throwException("Unauthorized", status, _responseText, _headers, result401);
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+                let result400: any = null;
+                let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result400 = RemoteServiceErrorResponse.fromJS(resultData400);
+                return throwException("Bad Request", status, _responseText, _headers, result400);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+                let result404: any = null;
+                let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result404 = RemoteServiceErrorResponse.fromJS(resultData404);
+                return throwException("Not Found", status, _responseText, _headers, result404);
+            });
+        } else if (status === 501) {
+            return response.text().then((_responseText) => {
+                let result501: any = null;
+                let resultData501 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result501 = RemoteServiceErrorResponse.fromJS(resultData501);
+                return throwException("Server Error", status, _responseText, _headers, result501);
+            });
+        } else if (status === 500) {
+            return response.text().then((_responseText) => {
+                let result500: any = null;
+                let resultData500 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result500 = RemoteServiceErrorResponse.fromJS(resultData500);
+                return throwException("Server Error", status, _responseText, _headers, result500);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ChessGameDto>(null as any);
     }
 
     /**
@@ -4172,6 +4254,110 @@ export class ChessClient {
         }
         return Promise.resolve<number>(null as any);
     }
+}
+
+export class ChessGameDto implements IChessGameDto {
+    gameSan?: string | undefined;
+    gameFen?: string | undefined;
+    gameAscii?: string | undefined;
+    dateStarted?: Date;
+    dateFinished?: Date;
+    gameStatus?: GameStatusDto;
+
+    constructor(data?: IChessGameDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.gameSan = _data["gameSan"];
+            this.gameFen = _data["gameFen"];
+            this.gameAscii = _data["gameAscii"];
+            this.dateStarted = _data["dateStarted"] ? new Date(_data["dateStarted"].toString()) : <any>undefined;
+            this.dateFinished = _data["dateFinished"] ? new Date(_data["dateFinished"].toString()) : <any>undefined;
+            this.gameStatus = _data["gameStatus"] ? GameStatusDto.fromJS(_data["gameStatus"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ChessGameDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChessGameDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["gameSan"] = this.gameSan;
+        data["gameFen"] = this.gameFen;
+        data["gameAscii"] = this.gameAscii;
+        data["dateStarted"] = this.dateStarted ? this.dateStarted.toISOString() : <any>undefined;
+        data["dateFinished"] = this.dateFinished ? this.dateFinished.toISOString() : <any>undefined;
+        data["gameStatus"] = this.gameStatus ? this.gameStatus.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IChessGameDto {
+    gameSan?: string | undefined;
+    gameFen?: string | undefined;
+    gameAscii?: string | undefined;
+    dateStarted?: Date;
+    dateFinished?: Date;
+    gameStatus?: GameStatusDto;
+}
+
+export class GameStatusDto implements IGameStatusDto {
+    state?: number;
+    turn?: number;
+    winner?: number;
+    reason?: string | undefined;
+
+    constructor(data?: IGameStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.state = _data["state"];
+            this.turn = _data["turn"];
+            this.winner = _data["winner"];
+            this.reason = _data["reason"];
+        }
+    }
+
+    static fromJS(data: any): GameStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GameStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["state"] = this.state;
+        data["turn"] = this.turn;
+        data["winner"] = this.winner;
+        data["reason"] = this.reason;
+        return data;
+    }
+}
+
+export interface IGameStatusDto {
+    state?: number;
+    turn?: number;
+    winner?: number;
+    reason?: string | undefined;
 }
 
 export class ChangePasswordInput implements IChangePasswordInput {

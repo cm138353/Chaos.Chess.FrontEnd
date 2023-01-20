@@ -1,5 +1,7 @@
-import { ChessGameToStringType } from "./chessGameToStringType";
-import { GameStatus } from "./gameStatus";
+import { GameRulesService } from './Services/gameRulesService';
+import { ChessGameStringType } from "./chessGameStringType";
+import { GameStatusDto } from '../../NSwag/chess_swagger';
+import { NEW_GAME } from './Conts/consts';
 
 export class ChessGame implements IChessGame {
     private _gameSan: string;
@@ -7,10 +9,20 @@ export class ChessGame implements IChessGame {
     private _gameAscii: string;
     private _dateStarted: Date;
     private _dateFinished: Date;
-    private _gameStatus: GameStatus;
+    private _gameStatus: GameStatusDto;
+    private gameRulesService: GameRulesService;
 
-    constructor() {
-
+    constructor(board: string = NEW_GAME, chessGameStringType: ChessGameStringType = ChessGameStringType.fen) {
+        switch (chessGameStringType) {
+            case ChessGameStringType.san:
+                this._gameSan = board;
+                break;
+            case ChessGameStringType.fen:
+                this._gameFen = board;
+            default:
+                this._gameFen = board;
+        }
+        this.gameRulesService = new GameRulesService(this._gameFen);
     }
 
     public get dateStarted(): Date {
@@ -21,15 +33,15 @@ export class ChessGame implements IChessGame {
         return this._dateFinished;
     }
 
-    public move(move: { from: string, dest: string, promotion?: string }): void {
-        throw new Error("Method not implemented.");
+    public move(from: string, dest: string, promotion?: string): void {
+        this.gameRulesService.validateMove(from, dest);
     }
 
     public isGameOver(): boolean {
         return true;
     }
 
-    public getStatus(): GameStatus {
+    public getStatus(): GameStatusDto {
         return this._gameStatus;
     }
 
@@ -41,13 +53,13 @@ export class ChessGame implements IChessGame {
 
     }
 
-    public toString(toStringType: ChessGameToStringType): string {
+    public toString(toStringType: ChessGameStringType): string {
         switch (toStringType) {
-            case ChessGameToStringType.ascii:
+            case ChessGameStringType.ascii:
                 return this._gameAscii;
-            case ChessGameToStringType.fen:
+            case ChessGameStringType.fen:
                 return this._gameFen;
-            case ChessGameToStringType.san:
+            case ChessGameStringType.san:
                 return this._gameSan;
             default:
                 return this._gameSan;
@@ -57,17 +69,18 @@ export class ChessGame implements IChessGame {
     public history(): string {
         return this._gameSan;
     }
+
 }
 
 export interface IChessGame {
     dateStarted: Date;
     dateFinished: Date;
 
-    move(move: { from: string, dest: string, promotion?: string }): void;
+    move(from: string, dest: string, promotion?: string): void;
     isGameOver(): boolean;
-    getStatus(): GameStatus;
+    getStatus(): GameStatusDto;
     undoMove(): void;
     resignGame(player: "white" | "black"): void;
-    toString(toStringType: ChessGameToStringType): string;
+    toString(toStringType: ChessGameStringType): string;
     history(): string;
 }
