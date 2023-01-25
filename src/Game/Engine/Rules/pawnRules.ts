@@ -11,6 +11,10 @@ export class PawnRules extends Rules {
         let rankDirection = move.fromRank - move.destRank;
         let fileDirection = move.fromFile - move.destFile;
 
+        // out of bounds
+        if (this.outOfBounds(move))
+            return false;
+
         // check if moving backwards
         if (move.player == "b" && rankDirection < 0)
             return false;
@@ -48,22 +52,18 @@ export class PawnRules extends Rules {
             return false;
 
         // is blocked 
-        if (this.isBlocked(`${String.fromCharCode(move.fromFile)}${move.fromRank}`, `${String.fromCharCode(move.destFile)}${move.destRank}`))
-            return false;
-
-        // piece is not moving out of bounds of the board
-        if (move.destRank > 8 || move.destRank < 1 || (move.destFile - 97) > 8 || (move.destFile - 97) < 1)
+        if (this.isBlocked(`${move.player == "w" ? "P" : "p"}${String.fromCharCode(move.fromFile)}${move.fromRank}`, `${String.fromCharCode(move.destFile)}${move.destRank}`))
             return false;
 
         return true;
     }
 
 
-    private isBlocked(from: string, dest: string) {
-        let fromFile = from.charAt(0);
-        let destRank: number = parseInt(dest.charAt(dest.length - 1));
-        let fromRank: number = parseInt(from.charAt(from.length - 1));
-        let player = from.charCodeAt(0) > 64 && from.charCodeAt(0) < 73 ? "w" : "b";
+    protected isBlocked(from: string, dest: string) {
+        let fromFile = from.charAt(1);
+        let destRank: number = +dest.charAt(dest.length - 1);
+        let fromRank: number = +from.charAt(from.length - 1);
+        let player = from.charAt(0).toUpperCase() == from.charAt(0) ? "w" : "b";
 
         let path = [];
         let i = fromRank;

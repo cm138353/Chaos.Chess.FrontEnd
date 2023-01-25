@@ -10,21 +10,21 @@ export class PathValidatorService {
     public isPathBlocked(path: string[], player: string) {
         let dest = path[path.length - 1];
         let destFile = dest.charCodeAt(0);
-        let destRank = parseInt(dest.charAt(dest.length - 1));
+        let destRank = +dest.charAt(dest.length - 1);
         let ranks = this.board.split(" ")[0].split("/");
         let targetRank = [...ranks[ranks.length - destRank]];
         let counter = 0;
         for (const space of targetRank) {
             if (space.charCodeAt(0) > 47 && space.charCodeAt(0) < 58) {
-                let number = parseInt(space);
+                let number = +space;
                 counter += number;
             }
             else
                 counter++;
 
-            if (counter > destFile - 97)
+            if (counter > destFile - 96)
                 return false;
-            else if (counter == destFile - 97 && ((player == "w" && space.charCodeAt(0) > 64 && space.charCodeAt(0) < 91) || (player == "b" && space.charCodeAt(0) > 96 && space.charCodeAt(0) < 123)))
+            else if (counter == destFile - 96 && ((player == "w" && space.charAt(0) == space.charAt(0).toUpperCase()) || (player == "b" && space.charAt(0).toLowerCase() == space.charAt(0))))
                 return true;
         }
     }

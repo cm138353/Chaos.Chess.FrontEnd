@@ -1,10 +1,16 @@
+import * as _ from 'lodash';
+import { FenStringService } from './fenStringService';
+
 export class GameStringService {
 
-    public static getNewGameFen() {
-        return "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
+    public static updateFen(fen: string, from: string, dest: string): string {
+        return FenStringService.update(fen, from, dest);
     }
 
-    public static getNewGameSan() {
+
+    public static updateSan(san: string, from: string, dest: string) {
 
     }
+
+
 }

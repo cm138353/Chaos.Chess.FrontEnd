@@ -1,3 +1,4 @@
+import { GameStringService } from './Services/gameStringService';
 import { GameRulesService } from './Services/gameRulesService';
 import { ChessGameStringType } from "./chessGameStringType";
 import { GameStatusDto } from '../../NSwag/chess_swagger';
@@ -10,7 +11,6 @@ export class ChessGame implements IChessGame {
     private _dateStarted: Date;
     private _dateFinished: Date;
     private _gameStatus: GameStatusDto;
-    private gameRulesService: GameRulesService;
 
     constructor(board: string = NEW_GAME, chessGameStringType: ChessGameStringType = ChessGameStringType.fen) {
         switch (chessGameStringType) {
@@ -22,7 +22,10 @@ export class ChessGame implements IChessGame {
             default:
                 this._gameFen = board;
         }
-        this.gameRulesService = new GameRulesService(this._gameFen);
+    }
+
+    public get gameFen(): string {
+        return this._gameFen;
     }
 
     public get dateStarted(): Date {
@@ -33,8 +36,14 @@ export class ChessGame implements IChessGame {
         return this._dateFinished;
     }
 
-    public move(from: string, dest: string, promotion?: string): void {
-        this.gameRulesService.validateMove(from, dest);
+    public move(from: string, dest: string, promotion?: string): boolean {
+        let isValid = GameRulesService.validateMove(this._gameFen, from, dest);
+        if (!isValid)
+            return false;
+
+        this._gameFen = GameStringService.updateFen(this._gameFen, from, dest);
+
+        return true;
     }
 
     public isGameOver(): boolean {

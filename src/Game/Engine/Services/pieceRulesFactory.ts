@@ -2,18 +2,13 @@ import { PawnRules } from "../Rules/pawnRules";
 import { RookRules } from "../Rules/rookRules";
 
 export class PieceRulesFactory {
-    private board: string;
 
-    constructor(board: string) {
-        this.board = board;
-    }
-
-    public getRules(piece: string) {
+    public static getRules(board: string, piece: string) {
         switch (piece) {
             case "p":
-                return new PawnRules(this.board);
+                return new PawnRules(board);
             case "r":
-                return new RookRules(this.board);
+                return new RookRules(board);
             case "n":
                 break;
             case "b":
