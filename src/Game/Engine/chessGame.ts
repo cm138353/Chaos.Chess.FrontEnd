@@ -41,7 +41,7 @@ export class ChessGame implements IChessGame {
         if (!isValid)
             return false;
 
-        this._gameFen = GameStringService.updateFen(this._gameFen, from, dest);
+        this._gameFen = GameStringService.updateFen(this._gameFen, from, dest, promotion);
 
         return true;
     }

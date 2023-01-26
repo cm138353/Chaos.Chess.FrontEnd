@@ -1,7 +1,7 @@
 import { GameRulesService } from './gameRulesService';
 export class FenStringService {
 
-    public static update(fen: string, from: string, dest: string): string {
+    public static update(fen: string, from: string, dest: string, promotion?: string): string {
         let piece = from.charAt(0);
         let board = fen.split(" ")[0];
         let boardStatus = fen.split(" ").slice(1);
@@ -129,7 +129,13 @@ export class FenStringService {
             let emptySpacesAfter: number = +boardDestRank[index] - ((destFile.charCodeAt(0) - 96) - index);
             if (index != 0)
                 buildDestRank.push(...boardDestRank.slice(0, index));
-            buildDestRank.push(...[`${emptySpacesBefore}`, piece, `${emptySpacesAfter}`]);
+
+            if (emptySpacesBefore)
+                buildDestRank.push(`${emptySpacesBefore}`);
+            buildDestRank.push(piece);
+            if (emptySpacesAfter)
+                buildDestRank.push(`${emptySpacesAfter}`);
+
             if (index != boardDestRank.length - 1)
                 buildDestRank.push(...boardDestRank.slice(index + 1));
         }

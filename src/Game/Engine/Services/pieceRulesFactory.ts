@@ -1,3 +1,7 @@
+import { KingRules } from './../Rules/kingRules';
+import { QueenRules } from './../Rules/queenRules';
+import { BishopRules } from './../Rules/bishopRules';
+import { KnighRules } from './../Rules/knightRules';
 import { PawnRules } from "../Rules/pawnRules";
 import { RookRules } from "../Rules/rookRules";
 
@@ -10,13 +14,13 @@ export class PieceRulesFactory {
             case "r":
                 return new RookRules(board);
             case "n":
-                break;
+                return new KnighRules(board);
             case "b":
-                break;
+                return new BishopRules(board);
             case "q":
-                break;
+                return new QueenRules(board);
             case "k":
-                break;
+                return new KingRules(board);
 
         }
     }

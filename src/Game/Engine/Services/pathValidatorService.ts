@@ -1,4 +1,5 @@
 import { singleton } from 'aurelia';
+import _ from 'lodash';
 @singleton
 export class PathValidatorService {
     private board: string;
@@ -22,7 +23,7 @@ export class PathValidatorService {
             else
                 counter++;
 
-            if (counter > destFile - 96)
+            if (counter > destFile - 96 || _.isNumber(+space))
                 return false;
             else if (counter == destFile - 96 && ((player == "w" && space.charAt(0) == space.charAt(0).toUpperCase()) || (player == "b" && space.charAt(0).toLowerCase() == space.charAt(0))))
                 return true;
