@@ -1,6 +1,6 @@
 import { inject } from "aurelia";
 import { ChessGame } from "./Engine/chessGame";
-import { ChessGameFactory } from "./Engine/chessGameFactory";
+import { ChessGameFactory } from "./Engine/Services/Factories/chessGameFactory";
 import { runTests } from "./Tests/gameRulesTests";
 @inject(ChessGameFactory)
 export class Game {

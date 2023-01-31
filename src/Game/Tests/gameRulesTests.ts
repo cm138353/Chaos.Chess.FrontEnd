@@ -1,12 +1,16 @@
-import { ChessGameFactory } from './../Engine/chessGameFactory';
+import { ChessGameFactory } from '../Engine/Services/Factories/chessGameFactory';
 export async function runTests() {
     let names = ["test_pawn_movement", "test_italian_game", "test_ruy_lopez", "test_scholars_mate"];
-    let task = Promise.all([test_pawn_movement(), test_italian_game(), test_ruy_lopez(), test_scholars_mate()]);
-    let result = await task;
+    // let task = Promise.all([test_pawn_movement(), test_italian_game(), test_ruy_lopez(), test_scholars_mate()]);
+    test_pawn_movement();
+    test_italian_game();
+    test_ruy_lopez();
+    test_scholars_mate();
+    // let result = await task;
 
-    for (let i = 0; i < result.length; i++) {
-        console.log(names[i] + "\t" + result[i]);
-    }
+    // for (let i = 0; i < result.length; i++) {
+    //     console.log(names[i] + "\t" + result[i]);
+    // }
 }
 
 function test_scholars_mate() { // 1.e4 e5 2.Bc4 (targeting f7) Nc6 3.Qh5 (adding another attacker to the f7-pawn) Nf6?? 4.Qxf7#
@@ -119,28 +123,28 @@ function test_pawn_movement() {
 
     for (let i = 1; i < 9; i++) {
         chessGame = factory.NewStandardGame();
-        sucess = chessGame.move("Pa2", `${"a".charCodeAt(0) + i}2`);
+        sucess = chessGame.move("Pa2", `${String.fromCharCode("a".charCodeAt(0) + i)}2`);
         if (sucess == true)
             return false;
     }
 
     for (let i = 1; i > 9; i++) {
         chessGame = factory.NewStandardGame();
-        sucess = chessGame.move("Ph2", `${"h".charCodeAt(0) - i}2`);
+        sucess = chessGame.move("Ph2", `${String.fromCharCode("h".charCodeAt(0) - i)}2`);
         if (sucess == true)
             return false;
     }
 
     for (let i = 1; i < 9; i++) {
         chessGame = factory.NewStandardGame();
-        sucess = chessGame.move("pa7", `${"a".charCodeAt(0) + i}7`);
+        sucess = chessGame.move("pa7", `${String.fromCharCode("a".charCodeAt(0) + i)}7`);
         if (sucess == true)
             return false;
     }
 
     for (let i = 1; i < 9; i++) {
         chessGame = factory.NewStandardGame();
-        sucess = chessGame.move("ph7", `${"h".charCodeAt(0) - i}7`);
+        sucess = chessGame.move("ph7", `${String.fromCharCode("h".charCodeAt(0) - i)}7`);
         if (sucess == true)
             return false;
     }

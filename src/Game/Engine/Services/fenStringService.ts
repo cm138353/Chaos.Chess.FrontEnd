@@ -1,12 +1,10 @@
 import { GameRulesService } from './gameRulesService';
 export class FenStringService {
 
-    public static update(fen: string, from: string, dest: string, promotion?: string): string {
+    public static update(fen: string, from: string, dest: string, isCapture: boolean, promotion?: string): string {
         let piece = from.charAt(0);
         let board = fen.split(" ")[0];
         let boardStatus = fen.split(" ").slice(1);
-        let isCapture = GameRulesService.isCapture(fen, dest, piece == piece.toUpperCase() ? "w" : "b");
-
         let replace = this.moveFrom(board, from);
         replace = this.moveDest(replace, dest, piece);
         fen = fen.replace(board, replace);

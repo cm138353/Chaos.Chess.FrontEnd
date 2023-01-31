@@ -1,9 +1,12 @@
-import { MoveData } from "../Services/gameRulesService";
+import { IMoveData } from "../Services/Models/iMoveData";
 import { Rules } from "./rules";
 
 export class KnighRules extends Rules {
 
-    public validateMove(move: MoveData): boolean {
+    constructor(board: string) {
+        super(board);
+    }
+    public validateMove(move: IMoveData): boolean {
 
         // out of bounds
         if (this.outOfBounds(move))
@@ -15,20 +18,19 @@ export class KnighRules extends Rules {
             return false;
 
         // blocked
-        if (this.isBlocked(`${move.player == "w" ? "N" : "n"}${String.fromCharCode(move.fromFile)}${move.fromRank}`, `${String.fromCharCode(move.destFile)}${move.destRank}`))
+        if (this.isBlocked(move))
             return false;
 
         return true;
     }
 
-    protected isBlocked(from: string, dest: string) {
-        let player = from.charAt(0).toUpperCase() == from.charAt(0) ? "w" : "b";
+    protected isBlocked(moveData: IMoveData) {
         let path = [];
-        path.push(dest);
-        return this.pathValidator.isPathBlocked(path, player);
+        path.push(`${String.fromCharCode(moveData.destFile)}${moveData.destRank}`);
+        return this.pathValidator.isPathBlocked(path, moveData.player);
     }
 
-    private populateAvailableMoves(move: MoveData) {
+    private populateAvailableMoves(move: IMoveData) {
         let availableMoves: string[] = [];
         // right 2 up 1
         if ((move.fromFile + 2) - 96 < 9 && (move.fromFile + 2) - 96 > 0 && (move.fromRank + 1) < 9 && (move.fromRank + 1) > 0)

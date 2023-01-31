@@ -1,6 +1,6 @@
 import { GameStringService } from './Services/gameStringService';
 import { GameRulesService } from './Services/gameRulesService';
-import { ChessGameStringType } from "./chessGameStringType";
+import { ChessGameStringType } from "./Models/chessGameStringType";
 import { GameStatusDto } from '../../NSwag/chess_swagger';
 import { NEW_GAME } from './Conts/consts';
 
@@ -11,6 +11,7 @@ export class ChessGame implements IChessGame {
     private _dateStarted: Date;
     private _dateFinished: Date;
     private _gameStatus: GameStatusDto;
+    private _gameRulesService: GameRulesService;
 
     constructor(board: string = NEW_GAME, chessGameStringType: ChessGameStringType = ChessGameStringType.fen) {
         switch (chessGameStringType) {
@@ -22,6 +23,7 @@ export class ChessGame implements IChessGame {
             default:
                 this._gameFen = board;
         }
+        this._gameRulesService = new GameRulesService();
     }
 
     public get gameFen(): string {
@@ -37,17 +39,22 @@ export class ChessGame implements IChessGame {
     }
 
     public move(from: string, dest: string, promotion?: string): boolean {
-        let isValid = GameRulesService.validateMove(this._gameFen, from, dest);
+        let isValid = this._gameRulesService.validateMove(this._gameFen, from, dest);
         if (!isValid)
             return false;
 
-        this._gameFen = GameStringService.updateFen(this._gameFen, from, dest, promotion);
+        let isCapture = this._gameRulesService.isCapture(this._gameFen, dest, from.charAt(0) == from.charAt(0).toUpperCase() ? "w" : "b");
+        this._gameFen = GameStringService.updateFen(this._gameFen, from, dest, isCapture, promotion);
+
+        this._gameRulesService.evaluateBoard(from.charAt(0) == from.charAt(0).toUpperCase() ? "w" : "b", this._gameFen);
+
+
 
         return true;
     }
 
     public isGameOver(): boolean {
-        return true;
+        return this._gameRulesService.isMate || this._gameRulesService.isDraw;
     }
 
     public getStatus(): GameStatusDto {

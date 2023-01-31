@@ -1,5 +1,5 @@
-import { ChessGameStringType } from './chessGameStringType';
-import { ChessGame } from './chessGame';
+import { ChessGameStringType } from '../../Models/chessGameStringType';
+import { ChessGame } from '../../chessGame';
 
 export class ChessGameFactory implements IChessGameFactory {
 

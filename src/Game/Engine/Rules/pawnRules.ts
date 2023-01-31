@@ -1,4 +1,5 @@
-import { MoveData } from './../Services/gameRulesService';
+import { IMoveData } from '../Services/Models/iMoveData';
+import { PawnMoveData } from '../Services/Models/pawnMoveData';
 import { Rules } from './rules';
 
 export class PawnRules extends Rules {
@@ -7,31 +8,32 @@ export class PawnRules extends Rules {
         super(board);
     }
 
-    public validateMove(move: MoveData): boolean {
-        let rankDirection = move.fromRank - move.destRank;
-        let fileDirection = move.fromFile - move.destFile;
+    public validateMove(move: IMoveData): boolean {
+        let moveData: PawnMoveData = new PawnMoveData(move);
+        let rankDirection = moveData.fromRank - moveData.destRank;
+        let fileDirection = moveData.fromFile - moveData.destFile;
 
         // out of bounds
-        if (this.outOfBounds(move))
+        if (this.outOfBounds(moveData))
             return false;
 
         // check if moving backwards
-        if (move.player == "b" && rankDirection < 0)
+        if (moveData.player == "b" && rankDirection < 0)
             return false;
-        else if (move.player == "w" && rankDirection > 0)
+        else if (moveData.player == "w" && rankDirection > 0)
             return false;
 
         // ensure pawn can only take two steps on initial position
         if (Math.abs(rankDirection) == 2) {
-            if (move.player == "b" && move.fromRank != 7)
+            if (moveData.player == "b" && moveData.fromRank != 7)
                 return false
-            else if (move.player == "w" && move.fromRank != 2)
+            else if (moveData.player == "w" && moveData.fromRank != 2)
                 return false;
         } else if (Math.abs(rankDirection) > 1) // ensure pawn can only move one space at a time
             return false;
 
         // ensure pawn cannot eat moving forward
-        if (Math.abs(rankDirection) > 0 && Math.abs(fileDirection) == 0 && move.isCapture)
+        if (Math.abs(rankDirection) > 0 && Math.abs(fileDirection) == 0 && moveData.isCapture)
             return false;
 
         // ensure pawn cannot move laterally more than one space 
@@ -48,36 +50,31 @@ export class PawnRules extends Rules {
 
         // ensure if capture space is empty that destination is equal to en Passant
         let enPassant: string = this.board.split(" ")[3]; // e3 e7 -
-        if (Math.abs(fileDirection) == 1 && !move.isCapture && enPassant != `${move.destFile}${move.destRank}`)
+        if (Math.abs(fileDirection) == 1 && !moveData.isCapture && enPassant != `${moveData.destFile}${moveData.destRank}`)
             return false;
 
         // is blocked 
-        if (this.isBlocked(`${move.player == "w" ? "P" : "p"}${String.fromCharCode(move.fromFile)}${move.fromRank}`, `${String.fromCharCode(move.destFile)}${move.destRank}`))
+        if (this.isBlocked(move))
             return false;
 
         return true;
     }
 
 
-    protected isBlocked(from: string, dest: string) {
-        let fromFile = from.charAt(1);
-        let destRank: number = +dest.charAt(dest.length - 1);
-        let fromRank: number = +from.charAt(from.length - 1);
-        let player = from.charAt(0).toUpperCase() == from.charAt(0) ? "w" : "b";
-
+    protected isBlocked(moveData: IMoveData) {
         let path = [];
-        let i = fromRank;
-        while (i != destRank) {
-            if (destRank > fromRank) {
-                path.push(`${fromFile}${i + 1}`);
+        let i = moveData.fromRank;
+        while (i != moveData.destRank) {
+            if (moveData.destRank > moveData.fromRank) {
+                path.push(`${moveData.fromFile}${i + 1}`);
                 i++;
             }
             else {
-                path.push(`${fromFile}${i - 1}`);
+                path.push(`${moveData.fromFile}${i - 1}`);
                 i--;
             }
         }
-        return this.pathValidator.isPathBlocked(path, player);
+        return this.pathValidator.isPathBlocked(path, moveData.player);
     }
 
 

@@ -1,8 +1,11 @@
-import { MoveData } from './../Services/gameRulesService';
+import { IMoveData } from '../Services/Models/iMoveData';
 import { Rules } from './rules';
 export class RookRules extends Rules {
 
-    public validateMove(move: MoveData): boolean {
+    constructor(board: string) {
+        super(board);
+    }
+    public validateMove(move: IMoveData): boolean {
         // out of bounds
         if (this.outOfBounds(move))
             return false;
@@ -12,44 +15,38 @@ export class RookRules extends Rules {
             return false;
 
         // is blocked
-        if (this.isBlocked(`${move.player == "w" ? "R" : "r"}${String.fromCharCode(move.fromFile)}${move.fromRank}`, `${String.fromCharCode(move.destFile)}${move.destRank}`))
+        if (this.isBlocked(move))
             return false;
 
         return true;
     }
 
-    protected isBlocked(from: string, dest: string) {
-        let fromRank: number = +from.charAt(from.length - 1);
-        let fromFile = from.charAt(1);
-        let destRank: number = +dest.charAt(dest.length - 1);
-        let destFile = from.charAt(0);
-        let player = from.charAt(0) == from.charAt(0).toUpperCase() ? "w" : "b";
-
+    protected isBlocked(moveData: IMoveData) {
         let path = [];
-        let isVertical = Math.abs(fromRank - destRank) > 0;
-        let i = isVertical ? fromRank : fromFile.charCodeAt(0);
+        let isVertical = Math.abs(moveData.fromRank - moveData.destRank) > 0;
+        let i = isVertical ? moveData.fromRank : moveData.fromFile;
 
-        while (isVertical ? i != destRank : i != destFile.charCodeAt(0)) {
+        while (isVertical ? i != moveData.destRank : i != moveData.destFile) {
             if (isVertical) {
-                if (destRank > fromRank) {
-                    path.push(`${fromFile}${i + 1}`);
+                if (moveData.destRank > moveData.fromRank) {
+                    path.push(`${moveData.fromFile}${i + 1}`);
                     i++;
                 }
                 else {
-                    path.push(`${fromFile}${i - 1}`);
+                    path.push(`${moveData.fromFile}${i - 1}`);
                     i--;
                 }
             } else {
-                if (destFile > fromFile) {
-                    path.push(`${String.fromCharCode(i + 1)}${fromRank}`);
+                if (moveData.destFile > moveData.fromFile) {
+                    path.push(`${String.fromCharCode(i + 1)}${moveData.fromRank}`);
                     i++;
                 }
                 else {
-                    path.push(`${String.fromCharCode(i - 1)}${fromRank}`);
+                    path.push(`${String.fromCharCode(i - 1)}${moveData.fromRank}`);
                     i--;
                 }
             }
         }
-        return this.pathValidator.isPathBlocked(path, player);
+        return this.pathValidator.isPathBlocked(path, moveData.player);
     }
 }

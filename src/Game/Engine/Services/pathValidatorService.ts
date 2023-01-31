@@ -13,10 +13,10 @@ export class PathValidatorService {
         let destFile = dest.charCodeAt(0);
         let destRank = +dest.charAt(dest.length - 1);
         let ranks = this.board.split(" ")[0].split("/");
-        let targetRank = [...ranks[ranks.length - destRank]];
+        let targetRank = ranks[ranks.length - destRank];
         let counter = 0;
         for (const space of targetRank) {
-            if (space.charCodeAt(0) > 47 && space.charCodeAt(0) < 58) {
+            if (_.isNumber(+space)) {
                 let number = +space;
                 counter += number;
             }

@@ -1,4 +1,4 @@
-import { MapperService } from './../../Services/mapperService';
+import { MapperService } from '../../../Services/mapperService';
 import { GameState } from './gameState';
 
 export class GameStatus implements IGameStatus {
