@@ -53,21 +53,13 @@ export class GameRulesService {
         let ranks = board.split(" ")[0].split("/");
 
         let targetRank = ranks[ranks.length - destRank];
-        let counter = 0;
-        for (const space of targetRank) {
-            const spaceCharCode = space.charCodeAt(0);
-            if (spaceCharCode > 47 && spaceCharCode < 58) {
-                let number = +space;
-                counter += number;
-            }
-            else
-                counter++;
+        const space = this.getSpaceFromRank(targetRank, destFile - 96);
+        if (_.isNumber(+space))
+            return false;
+        let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
+        if ((player == "w" && colorOfPiece == "b") || (player == "b" && colorOfPiece == "w"))
+            return true;
 
-            if (counter > destFile - 96)
-                break;
-            else if (counter == destFile - 96 && ((player == "w" && spaceCharCode > 64 && spaceCharCode < 91) || (player == "b" && spaceCharCode > 96 && spaceCharCode < 123)))
-                return true;
-        }
         return false;
     }
 
@@ -78,7 +70,8 @@ export class GameRulesService {
         let rank = 8 - rankIndex;
         let fileIndex = ranks[rankIndex].indexOf(playerThatJustMoved == "w" ? "k" : "K");
         let file = 97 - fileIndex;
-        let isCheck = this.getAttackers(`${String.fromCharCode(file)}${rank}`, playerThatJustMoved == "w" ? "b" : "w", board);
+        let attackers = this.getAttackers(`${String.fromCharCode(file)}${rank}`, playerThatJustMoved == "w" ? "b" : "w", board);
+        let isCheck = attackers.length > 0;
         this.isBlackChecked = isCheck && playerThatJustMoved == "w" ? true : false;
         this.isWhiteChecked = isCheck && playerThatJustMoved == "b" ? true : false;
 
@@ -115,7 +108,10 @@ export class GameRulesService {
         let topBottom = this.getTopToBottomDiagonalAttackers(ranks, space, player);
         if (topBottom.length)
             attackers.push(...topBottom);
-        // horse spaces 
+        // knight spaces 
+        let knightAttackers = this.getKnightAttackers(ranks, space, player);
+        if (knightAttackers.length)
+            attackers.push(...knightAttackers);
 
         return attackers;
     }
@@ -136,7 +132,7 @@ export class GameRulesService {
 
             if (counter < (targetFileCharCode - 96)) {
                 let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
-                if (((colorOfPiece == "w" && player == "b") || (colorOfPiece == "b" && player == "w")) && (space.toLowerCase() == "r" || space.toLowerCase() == "q")) {
+                if (player != colorOfPiece && (space.toLowerCase() == "r" || space.toLowerCase() == "q")) {
                     leftAttacker = `${String.fromCharCode(counter + 96)}${+space.charAt(space.length - 1)}`;
                 }
                 else {
@@ -147,7 +143,7 @@ export class GameRulesService {
                 let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
                 if (((colorOfPiece == "w" && player == "w") || (colorOfPiece == "b" && player == "b")) && rightAttackers == undefined)
                     break;
-                else if (((colorOfPiece == "w" && player == "b") || (colorOfPiece == "b" && player == "w")) && (space.toLowerCase() == "r" || space.toLowerCase() == "q")) {
+                else if (player != colorOfPiece && (space.toLowerCase() == "r" || space.toLowerCase() == "q")) {
                     rightAttackers = `${String.fromCharCode(counter + 96)}${+space.charAt(space.length - 1)}`;
                     break;
                 }
@@ -174,7 +170,7 @@ export class GameRulesService {
                 if (_.isNumber(+space))
                     continue;
                 let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
-                if (((colorOfPiece == "w" && player == "b") || (colorOfPiece == "b" && player == "w")))
+                if (player != colorOfPiece)
                     aboveAttacker = `${String.fromCharCode(targetFileCharCode)}${8 - rankIndex}`;
                 else
                     aboveAttacker = undefined;
@@ -185,7 +181,7 @@ export class GameRulesService {
                 if (_.isNumber(+space))
                     break;
                 let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
-                if (((colorOfPiece == "w" && player == "b") || (colorOfPiece == "b" && player == "w"))) {
+                if (player != colorOfPiece) {
                     belowAttacker = `${String.fromCharCode(targetFileCharCode)}${8 - rankIndex}`;
                     break;
                 }
@@ -202,27 +198,27 @@ export class GameRulesService {
 
     private getBottomToTopDiagonalAttackers(ranks: string[], targetSpace: string, player: string): string[] {
         let targetRank = +targetSpace.charAt(targetSpace.length - 1)
-        let targetFile = targetSpace.charCodeAt(0);
-        let distanceLeft = targetFile - 97;
+        let targetFileCharCode = targetSpace.charCodeAt(0);
+        let distanceLeft = targetFileCharCode - 97;
         let distanceBottom = targetRank - 1;
         let bottomLeft: string;
 
         if (distanceLeft < distanceBottom)
-            bottomLeft = `${String.fromCharCode(targetFile - distanceLeft)}${targetRank - distanceLeft}`
+            bottomLeft = `${String.fromCharCode(targetFileCharCode - distanceLeft)}${targetRank - distanceLeft}`
         else if (distanceBottom <= distanceLeft)
-            bottomLeft = `${String.fromCharCode(targetFile - distanceBottom)}${targetRank - distanceBottom}`;
+            bottomLeft = `${String.fromCharCode(targetFileCharCode - distanceBottom)}${targetRank - distanceBottom}`;
 
         let attackers = [];
         let leftAttacker: string;
         let rightAttacker: string;
-        for (let i = bottomLeft.charCodeAt(0) - 96, j = +bottomLeft.charAt(bottomLeft.length - 1); i < 9 && j < 9; i++, j++) {
+        for (let i = bottomLeft.charCodeAt(0) - 96, j = +bottomLeft.charAt(bottomLeft.length - 1); i <= 8 && j <= 8; i++, j++) {
             let rank = ranks[8 - j];
             if (targetRank < j) {
                 const space = this.getSpaceFromRank(rank, i);
                 if (_.isNumber(+space))
                     break;
                 let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
-                if ((colorOfPiece == "w" && player == "b") || (colorOfPiece == "b" && player == "w"))
+                if (player != colorOfPiece)
                     leftAttacker = `${String.fromCharCode(i + 96)}${j}`;
                 else
                     leftAttacker = undefined;
@@ -231,7 +227,7 @@ export class GameRulesService {
                 if (_.isNumber(+space))
                     break;
                 let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
-                if ((colorOfPiece == "w" && player == "b") || (colorOfPiece == "b" && player == "w")) {
+                if (player != colorOfPiece) {
                     rightAttacker = `${String.fromCharCode(i + 96)}${j}`;
                     break;
                 }
@@ -247,27 +243,27 @@ export class GameRulesService {
 
     private getTopToBottomDiagonalAttackers(ranks: string[], targetSpace: string, player: string): string[] {
         let targetRank = +targetSpace.charAt(targetSpace.length - 1)
-        let targetFile = targetSpace.charCodeAt(0);
+        let targetFileCharCode = targetSpace.charCodeAt(0);
         let topLeft: string;
         let distanceTop = 8 - targetRank;
-        let distanceLeft = targetFile - 97;
+        let distanceLeft = targetFileCharCode - 97;
 
         if (distanceLeft < distanceTop)
-            topLeft = `${String.fromCharCode(targetFile - distanceLeft)}${targetRank + distanceLeft}`
+            topLeft = `${String.fromCharCode(targetFileCharCode - distanceLeft)}${targetRank + distanceLeft}`
         else if (distanceTop <= distanceLeft)
-            topLeft = `${String.fromCharCode(targetFile - distanceTop)}${targetRank + distanceTop}`;
+            topLeft = `${String.fromCharCode(targetFileCharCode - distanceTop)}${targetRank + distanceTop}`;
 
         let attackers = [];
         let leftAttacker: string;
         let rightAttacker: string;
-        for (let i = topLeft.charCodeAt(0) - 96, j = +topLeft.charAt(topLeft.length - 1); i < 9 && j > 0; i++, j--) {
+        for (let i = topLeft.charCodeAt(0) - 96, j = +topLeft.charAt(topLeft.length - 1); i <= 8 && j >= 1; i++, j--) {
             let rank = ranks[8 - j];
             if (j > targetRank) {
                 const space = this.getSpaceFromRank(rank, i);
                 if (_.isNumber(+space))
                     continue;
                 let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
-                if ((colorOfPiece == "w" && player == "b") || (colorOfPiece == "b" && player == "w"))
+                if (player != colorOfPiece)
                     leftAttacker = `${String.fromCharCode(i + 96)}${j}`;
                 else
                     leftAttacker = undefined;
@@ -277,7 +273,7 @@ export class GameRulesService {
                 if (_.isNumber(+space))
                     continue;
                 let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
-                if ((colorOfPiece == "w" && player == "b") || (colorOfPiece == "b" && player == "w")) {
+                if (player != colorOfPiece) {
                     rightAttacker = `${String.fromCharCode(i + 96)}${j}`;
                     break;
                 }
@@ -289,6 +285,85 @@ export class GameRulesService {
             attackers.push(leftAttacker);
         if (rightAttacker)
             attackers.push(rightAttacker);
+        return attackers;
+    }
+
+    private getKnightAttackers(ranks: string[], targetSpace: string, player: string) {
+        let targetRank = +targetSpace.charAt(targetSpace.length - 1)
+        let targetFileCharCode = targetSpace.charCodeAt(0);
+        let attackers = [];
+        if (targetRank + 2 <= 8) {
+            // up 2 right 1
+            if ((targetFileCharCode - 96) + 1 < 8) {
+                let rank = ranks[8 - (targetRank + 2)];
+                const space = this.getSpaceFromRank(rank, (targetFileCharCode - 96) + 1);
+                let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
+                if (_.isNaN(+space) && player != colorOfPiece)
+                    attackers.push(`${String.fromCharCode((targetFileCharCode - 96) + 1)}${targetRank + 2}`);
+            }
+            // up 2 left 1
+            if ((targetFileCharCode - 96) - 1 < 8) {
+                let rank = ranks[8 - (targetRank + 2)];
+                const space = this.getSpaceFromRank(rank, (targetFileCharCode - 96) - 1);
+                let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
+                if (_.isNaN(+space) && player != colorOfPiece)
+                    attackers.push(`${String.fromCharCode((targetFileCharCode - 96) - 1)}${targetRank + 2}`);
+            }
+        }
+        if (targetRank + 1 <= 8) {
+            // right 2 up 1
+            if ((targetFileCharCode - 96) + 2 < 8) {
+                let rank = ranks[8 - (targetRank + 1)];
+                const space = this.getSpaceFromRank(rank, (targetFileCharCode - 96) + 2);
+                let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
+                if (_.isNaN(+space) && player != colorOfPiece)
+                    attackers.push(`${String.fromCharCode((targetFileCharCode - 96) + 2)}${targetRank + 1}`);
+            }
+            // left 2 up 1
+            if ((targetFileCharCode - 96) - 2 < 8) {
+                let rank = ranks[8 - (targetRank + 1)];
+                const space = this.getSpaceFromRank(rank, (targetFileCharCode - 96) - 2);
+                let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
+                if (_.isNaN(+space) && player != colorOfPiece)
+                    attackers.push(`${String.fromCharCode((targetFileCharCode - 96) - 2)}${targetRank + 1}`);
+            }
+        }
+        if (targetRank - 1 >= 1) {
+            // right 2 down 1
+            if ((targetFileCharCode - 96) + 2 < 8) {
+                let rank = ranks[8 - (targetRank - 1)];
+                const space = this.getSpaceFromRank(rank, (targetFileCharCode - 96) + 2);
+                let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
+                if (_.isNaN(+space) && player != colorOfPiece)
+                    attackers.push(`${String.fromCharCode((targetFileCharCode - 96) + 2)}${targetRank - 1}`);
+            }
+            // left 2 down 1
+            if ((targetFileCharCode - 96) - 2 < 8) {
+                let rank = ranks[8 - (targetRank - 1)];
+                const space = this.getSpaceFromRank(rank, (targetFileCharCode - 96) - 2);
+                let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
+                if (_.isNaN(+space) && player != colorOfPiece)
+                    attackers.push(`${String.fromCharCode((targetFileCharCode - 96) - 2)}${targetRank - 1}`);
+            }
+        }
+        if (targetRank - 2 >= 1) {
+            // right 1 down 2
+            if ((targetFileCharCode - 96) + 1 < 8) {
+                let rank = ranks[8 - (targetRank - 2)];
+                const space = this.getSpaceFromRank(rank, (targetFileCharCode - 96) + 1);
+                let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
+                if (_.isNaN(+space) && player != colorOfPiece)
+                    attackers.push(`${String.fromCharCode((targetFileCharCode - 96) + 1)}${targetRank - 2}`);
+            }
+            // left 1 down 2
+            if ((targetFileCharCode - 96) - 1 < 8) {
+                let rank = ranks[8 - (targetRank - 2)];
+                const space = this.getSpaceFromRank(rank, (targetFileCharCode - 96) - 1);
+                let colorOfPiece = space == space.toUpperCase() ? "w" : "b";
+                if (_.isNaN(+space) && player != colorOfPiece)
+                    attackers.push(`${String.fromCharCode((targetFileCharCode - 96) - 1)}${targetRank - 2}`);
+            }
+        }
         return attackers;
     }
 
@@ -306,10 +381,6 @@ export class GameRulesService {
             if (counter >= file)
                 return space;
         }
-    }
-
-    private getKnightAttackers(ranks: string[], targetSpace: string, player: string) {
-
     }
 }
 

@@ -107,42 +107,42 @@ function test_pawn_movement() {
     let chessGame = factory.NewStandardGame();
     let sucess = false;
 
-    for (let i = 3; i < 9; i++) {
+    for (let i = 3; i <= 8; i++) {
         chessGame = factory.NewStandardGame();
         sucess = chessGame.move("Pe2", `e${i}`);
         if (((i == 3 || i == 4) && sucess == false) || (i != 3 && i != 4 && sucess == true))
             return false;
     }
 
-    for (let i = 6; i > 0; i--) {
+    for (let i = 6; i >= 1; i--) {
         chessGame = factory.NewStandardGame();
         sucess = chessGame.move(`pe7`, `e${i}`);
         if (((i == 6 || i == 5) && sucess == false) || (i != 6 && i != 5 && sucess == true))
             return false;
     }
 
-    for (let i = 1; i < 9; i++) {
+    for (let i = 1; i <= 8; i++) {
         chessGame = factory.NewStandardGame();
         sucess = chessGame.move("Pa2", `${String.fromCharCode("a".charCodeAt(0) + i)}2`);
         if (sucess == true)
             return false;
     }
 
-    for (let i = 1; i > 9; i++) {
+    for (let i = 1; i <= 8; i++) {
         chessGame = factory.NewStandardGame();
         sucess = chessGame.move("Ph2", `${String.fromCharCode("h".charCodeAt(0) - i)}2`);
         if (sucess == true)
             return false;
     }
 
-    for (let i = 1; i < 9; i++) {
+    for (let i = 1; i <= 8; i++) {
         chessGame = factory.NewStandardGame();
         sucess = chessGame.move("pa7", `${String.fromCharCode("a".charCodeAt(0) + i)}7`);
         if (sucess == true)
             return false;
     }
 
-    for (let i = 1; i < 9; i++) {
+    for (let i = 1; i <= 8; i++) {
         chessGame = factory.NewStandardGame();
         sucess = chessGame.move("ph7", `${String.fromCharCode("h".charCodeAt(0) - i)}7`);
         if (sucess == true)

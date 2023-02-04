@@ -33,28 +33,28 @@ export class KnighRules extends Rules {
     private populateAvailableMoves(move: IMoveData) {
         let availableMoves: string[] = [];
         // right 2 up 1
-        if ((move.fromFile + 2) - 96 < 9 && (move.fromFile + 2) - 96 > 0 && (move.fromRank + 1) < 9 && (move.fromRank + 1) > 0)
+        if ((move.fromFile + 2) - 96 <= 8 && (move.fromFile + 2) - 96 >= 1 && (move.fromRank + 1) <= 8 && (move.fromRank + 1) >= 1)
             availableMoves.push(`${String.fromCharCode(move.fromFile + 2)}${move.fromRank + 1}`);
         // left 2 up 1
-        if ((move.fromFile - 2) - 96 < 9 && (move.fromFile - 2) - 96 > 0 && (move.fromRank + 1) < 9 && (move.fromRank + 1) > 0)
+        if ((move.fromFile - 2) - 96 <= 8 && (move.fromFile - 2) - 96 >= 1 && (move.fromRank + 1) <= 8 && (move.fromRank + 1) >= 1)
             availableMoves.push(`${String.fromCharCode(move.fromFile - 2)}${move.fromRank + 1}`);
         // right 2 down 1
-        if ((move.fromFile + 2) - 96 < 9 && (move.fromFile + 2) - 96 > 0 && (move.fromRank - 1) < 9 && (move.fromRank - 1) > 0)
+        if ((move.fromFile + 2) - 96 <= 8 && (move.fromFile + 2) - 96 >= 1 && (move.fromRank - 1) <= 8 && (move.fromRank - 1) >= 1)
             availableMoves.push(`${String.fromCharCode(move.fromFile + 2)}${move.fromRank - 1}`);
         // left 2 down 1
-        if ((move.fromFile - 2) - 96 < 9 && (move.fromFile - 2) - 96 > 0 && (move.fromRank - 1) < 9 && (move.fromRank - 1) > 0)
+        if ((move.fromFile - 2) - 96 <= 8 && (move.fromFile - 2) - 96 >= 1 && (move.fromRank - 1) <= 8 && (move.fromRank - 1) >= 1)
             availableMoves.push(`${String.fromCharCode(move.fromFile - 2)}${move.fromRank - 1}`);
         // right 1 up 2
-        if ((move.fromFile + 1) - 96 < 9 && (move.fromFile + 1) - 96 > 0 && (move.fromRank + 2) < 9 && (move.fromRank + 2) > 0)
+        if ((move.fromFile + 1) - 96 <= 8 && (move.fromFile + 1) - 96 >= 1 && (move.fromRank + 2) <= 8 && (move.fromRank + 2) >= 1)
             availableMoves.push(`${String.fromCharCode(move.fromFile + 1)}${move.fromRank + 2}`);
         // left 1 up 2
-        if ((move.fromFile - 1) - 96 < 9 && (move.fromFile - 1) - 96 > 0 && (move.fromRank + 2) < 9 && (move.fromRank + 2) > 0)
+        if ((move.fromFile - 1) - 96 <= 8 && (move.fromFile - 1) - 96 >= 1 && (move.fromRank + 2) <= 8 && (move.fromRank + 2) >= 1)
             availableMoves.push(`${String.fromCharCode(move.fromFile - 1)}${move.fromRank + 2}`);
         // right 1 down 2
-        if ((move.fromFile + 1) - 96 < 9 && (move.fromFile + 1) - 96 > 0 && (move.fromRank - 2) < 9 && (move.fromRank - 2) > 0)
+        if ((move.fromFile + 1) - 96 <= 8 && (move.fromFile + 1) - 96 >= 1 && (move.fromRank - 2) <= 8 && (move.fromRank - 2) >= 1)
             availableMoves.push(`${String.fromCharCode(move.fromFile + 1)}${move.fromRank - 2}`);
         // left 1 down 2
-        if ((move.fromFile - 1) - 96 < 9 && (move.fromFile - 1) - 96 > 0 && (move.fromRank - 2) < 9 && (move.fromRank - 2) > 0)
+        if ((move.fromFile - 1) - 96 <= 8 && (move.fromFile - 1) - 96 >= 1 && (move.fromRank - 2) <= 8 && (move.fromRank - 2) >= 1)
             availableMoves.push(`${String.fromCharCode(move.fromFile - 1)}${move.fromRank - 2}`);
         return availableMoves;
     }
