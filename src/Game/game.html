@@ -1,3 +1,58 @@
-<h1>This is the start of the game! TEST</h1>
+<h1 class="text-center">Chaos Chess</h1>
+<div class="chess-container d-flex justify-content-center">
+    <table class="chess-board">
+        <thead>
+            <th></th>
+            <th class="text-center" repeat.for="file of files">${file}</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <tr>
+                <th>8</th>
+                <td repeat.for="blackPiece of blackPieces" innerhtml="<div class='${blackPiece}'></div>"></td>
+                <th>8</th>
+            </tr>
+            <tr>
+                <th>7</th>
+                <td repeat.for="blackPiece of blackPieces" innerhtml="<div class='${blackPawn}'></div>"></td>
+                <th>7</th>
+            </tr>
+            <tr>
+                <th>6</th>
+                <td repeat.for="file of files"></td>
+                <th>6</th>
+            </tr>
+            <tr>
+                <th>5</th>
+                <td repeat.for="file of files"></td>
+                <th>5</th>
+            </tr>
+            <tr>
+                <th>4</th>
+                <td repeat.for="file of files"></td>
+                <th>4</th>
+            </tr>
+            <tr>
+                <th>3</th>
+                <td repeat.for="file of files"></td>
+                <th>3</th>
+            </tr>
+            <tr>
+                <th>2</th>
+                <td repeat.for="whitePiece of whitePieces" innerhtml="<div class='${whitePawn}'></div>"></td>
+                <th>2</th>
+            </tr>
+            <tr>
+                <th>1</th>
+                <td repeat.for="whitePiece of whitePieces" innerhtml="<div class='${whitePiece}'></div>"></td>
+                <th>1</th>
+            </tr>
+        </tbody>
+        <tfoot>
+            <th></th>
+            <th class="text-center" repeat.for="file of files">${file}</th>
+            <th></th>
+        </tfoot>
+    </table>
 
-<button class="btn btn-primary" click.delegate="move()">Test Move</button>
+</div>

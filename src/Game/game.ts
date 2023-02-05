@@ -5,6 +5,11 @@ import { runTests } from "./Tests/gameRulesTests";
 @inject(ChessGameFactory)
 export class Game {
     private game: ChessGame;
+    private files: string[] = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    private blackPieces: string[] = ["black-rook", "black-knight", "black-bishop", "black-queen", "black-king", "black-bishop", "black-knight", "black-rook"];
+    private blackPawn: string = "black-pawn";
+    private whitePieces: string[] = ["white-rook", "white-knight", "white-bishop", "white-queen", "white-king", "white-bishop", "white-knight", "white-rook"];
+    private whitePawn: string = "white-pawn";
 
     constructor(chessFactory: ChessGameFactory) {
         runTests();

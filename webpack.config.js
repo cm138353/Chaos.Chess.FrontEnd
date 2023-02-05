@@ -70,7 +70,7 @@ module.exports = function (env, { analyze }) {
         { test: /\.(woff|woff2|ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, type: 'asset' },
         { test: /\.css$/i, use: ['style-loader', cssLoader, postcssLoader] },
         { test: /\.ts$/i, use: ['ts-loader', '@aurelia/webpack-loader'], exclude: /node_modules/ },
-        { test: /\.scss$/i, use: ["css-loader", "sass-loader"] },
+        { test: /\.scss$/i, use: ["style-loader", "css-loader", "sass-loader"] },
         {
           test: /[/\\]src[/\\].+\.html$/i,
           use: '@aurelia/webpack-loader',

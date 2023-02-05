@@ -10,6 +10,6 @@ declare module '*.html' {
   export const shadowOptions: { mode: 'open' | 'closed' } | undefined;
   export function register(container: IContainer): void;
 }
-// declare module '*.scss';
+declare module '*.scss';
 
 declare module '*.css';

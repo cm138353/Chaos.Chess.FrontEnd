@@ -1,0 +1,117 @@
+.chess-container {
+    margin-bottom: 20rem;
+}
+
+.chess-board {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.chess-board th {
+    padding: .5em;
+    background-image: url('../../assets/white\ space.png');
+}
+
+tr th {
+    padding-left: 1em !important;
+    padding-right: 1rem !important;
+}
+
+.chess-board td {
+    border: 2px solid;
+    width: 4rem;
+    height: 4rem;
+}
+
+.chess-board tbody tr:nth-child(odd) td:nth-child(even) {
+    background-image: url('../../assets/white\ space.png');
+}
+
+.chess-board tbody tr:nth-child(odd) td:nth-child(odd) {
+    background-image: url('../../assets/black\ space.png');
+}
+
+.chess-board tbody tr:nth-child(even) td:nth-child(odd) {
+    background-image: url('../../assets/white\ space.png');
+}
+
+.chess-board tbody tr:nth-child(even) td:nth-child(even) {
+    background-image: url('../../assets/black\ space.png');
+}
+
+
+.chess-piece {
+    background-repeat: no-repeat;
+    background-size: 3.5rem;
+    background-position: center;
+    width: 50px;
+    height: 50px;
+    margin-right: auto;
+    margin-left: auto;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+// black
+.black-rook {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_rdt45.svg');
+}
+
+.black-knight {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_ndt45.svg');
+}
+
+.black-bishop {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_bdt45.svg');
+}
+
+.black-queen {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_qdt45.svg');
+}
+
+.black-king {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_kdt45.svg');
+}
+
+.black-pawn {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_pdt45.svg');
+}
+
+// white 
+.white-rook {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_rlt45.svg');
+}
+
+.white-knight {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_nlt45.svg');
+}
+
+.white-bishop {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_blt45.svg');
+}
+
+.white-queen {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_qlt45.svg');
+}
+
+.white-king {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_klt45.svg');
+}
+
+.white-pawn {
+    @extend .chess-piece;
+    background-image: url('../../assets/Chess Pieces/Chess_plt45.svg');
+}
