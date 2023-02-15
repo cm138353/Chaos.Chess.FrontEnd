@@ -23,9 +23,9 @@ export class MyApp {
 
 
   public async attached() {
-    let response = await this._chessClient.getCurrentGame();
+    // let response = await this._chessClient.getCurrentGame();
 
-    console.log(response);
+    // console.log(response);
 
   }
 }

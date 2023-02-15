@@ -10,11 +10,11 @@ export abstract class Rules {
         this.pathValidator = new PathValidatorService(this.board);
     }
 
-    abstract validateMove(move: IMoveData): boolean;
-    protected abstract isBlocked(move: IMoveData): boolean;
-    protected outOfBounds(move: IMoveData) {
+    abstract validateMove(moveData: IMoveData): boolean;
+    protected abstract isBlocked(moveData: IMoveData): boolean;
+    protected outOfBounds(moveData: IMoveData) {
         // out of bounds
-        if (move.destRank > 8 || move.destRank < 1 || (move.destFile - 96) > 8 || (move.destFile - 96) < 1)
+        if (moveData.destRank > 8 || moveData.destRank < 1 || (moveData.destFile - 96) > 8 || (moveData.destFile - 96) < 1)
             return true;
 
         return false;

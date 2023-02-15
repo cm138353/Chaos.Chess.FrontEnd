@@ -16,7 +16,7 @@ export class MoveDataFactory {
             fromFile: from.charCodeAt(1),
             destFile: dest.charCodeAt(0),
             player: request.player,
-            isChecked: request.player == "w" ? request.isWhiteChecked : request.isBlackChecked,
+            isCheck: request.isCheck,
             isPinned: request.player == "w" ? request.whitePins.some(x => x == from) : request.blackPins.some(x => x == from)
         });
         switch (request.piece.toLowerCase()) {

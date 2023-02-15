@@ -7,7 +7,7 @@ export class KingMoveData implements IMoveData {
     public fromFile: number;
     public destFile: number;
     public player: string;
-    public isChecked: boolean;
+    public isCheck: boolean;
     public isPinned: boolean;
     public isDestAttacked: boolean;
 

@@ -7,8 +7,7 @@ export class GetMoveRequest implements IGetMoveRequest {
     public player: string;
     public whitePins: string[];
     public blackPins: string[];
-    public isWhiteChecked: boolean;
-    public isBlackChecked: boolean;
+    public isCheck: boolean;
     public isCapture: boolean;
     public isSpaceAttacked: boolean;
 
@@ -25,8 +24,7 @@ export interface IGetMoveRequest {
     player: string;
     whitePins: string[];
     blackPins: string[];
-    isWhiteChecked: boolean;
-    isBlackChecked: boolean;
     isCapture: boolean;
+    isCheck: boolean;
     isSpaceAttacked: boolean;
 }

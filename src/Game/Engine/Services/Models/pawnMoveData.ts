@@ -8,7 +8,7 @@ export class PawnMoveData implements IMoveData {
     public destFile: number;
     public player: string;
     public isCapture: boolean;
-    public isChecked: boolean;
+    public isCheck: boolean;
     public isPinned: boolean;
 
     constructor(data?: IMoveData) {

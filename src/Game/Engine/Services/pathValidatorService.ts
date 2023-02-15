@@ -1,5 +1,6 @@
 import { singleton } from 'aurelia';
 import _ from 'lodash';
+import { getSpaceFromRank } from './Utility/helpfulFunctions';
 @singleton
 export class PathValidatorService {
     private board: string;
@@ -8,25 +9,22 @@ export class PathValidatorService {
         this.board = board;
     }
 
-    public isPathBlocked(path: string[], player: string) {
-        let dest = path[path.length - 1];
-        let destFile = dest.charCodeAt(0);
-        let destRank = +dest.charAt(dest.length - 1);
-        let ranks = this.board.split(" ")[0].split("/");
-        let targetRank = ranks[ranks.length - destRank];
-        let counter = 0;
-        for (const space of targetRank) {
-            if (_.isNumber(+space)) {
-                let number = +space;
-                counter += number;
-            }
-            else
-                counter++;
-
-            if (counter > destFile - 96 || _.isNumber(+space))
+    public isPathBlocked(path: string[], player: string): boolean {
+        for (const space of path) {
+            let destFile = space.charCodeAt(0) - 96;
+            let destRank = +space.charAt(space.length - 1);
+            let ranks = this.board.split(" ")[0].split("/");
+            let targetRank = ranks[ranks.length - destRank];
+            let target = getSpaceFromRank(targetRank, destFile);
+            if (_.isFinite(+target))
                 return false;
-            else if (counter == destFile - 96 && ((player == "w" && space.charAt(0) == space.charAt(0).toUpperCase()) || (player == "b" && space.charAt(0).toLowerCase() == space.charAt(0))))
+            let colorOfPiece = target == target.toUpperCase() ? "w" : "b";
+            if (player == colorOfPiece)
+                return true;
+            if (player != colorOfPiece && space != path[path.length - 1] && path.length > 1)
                 return true;
         }
+
+        return false;
     }
 }

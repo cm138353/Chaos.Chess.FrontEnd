@@ -3,6 +3,8 @@ import { GameRulesService } from './Services/gameRulesService';
 import { ChessGameStringType } from "./Models/chessGameStringType";
 import { GameStatusDto } from '../../NSwag/chess_swagger';
 import { NEW_GAME } from './Conts/consts';
+import { UpdateFenString } from './Services/Models/updateFenString';
+import { UpdateSanString } from './Services/Models/updateSanString';
 
 export class ChessGame implements IChessGame {
     private _gameSan: string;
@@ -43,12 +45,15 @@ export class ChessGame implements IChessGame {
         if (!isValid)
             return false;
 
-        let isCapture = this._gameRulesService.isCapture(this._gameFen, dest, from.charAt(0) == from.charAt(0).toUpperCase() ? "w" : "b");
-        this._gameFen = GameStringService.updateFen(this._gameFen, from, dest, isCapture, promotion);
+        let piece = from.charAt(0);
+        let colorOfPiece = piece.charAt(0) == piece.charAt(0).toUpperCase() ? "w" : "b";
+        let isCapture = this._gameRulesService.isCapture(this._gameFen, dest, colorOfPiece);
+        let copyOfFen = this._gameFen;
+        this._gameFen = GameStringService.updateFen(new UpdateFenString({ fen: this.gameFen, from, dest, promotion, isCapture }));
 
-        this._gameRulesService.evaluateBoard(from.charAt(0) == from.charAt(0).toUpperCase() ? "w" : "b", this._gameFen);
+        this._gameRulesService.evaluateBoard(colorOfPiece, this._gameFen);
 
-
+        this._gameSan = GameStringService.updateSan(new UpdateSanString({ san: this._gameSan, fen: this._gameFen, from, dest, isCapture, isCheck: this._gameRulesService.isCheck, promotion }));
 
         return true;
     }

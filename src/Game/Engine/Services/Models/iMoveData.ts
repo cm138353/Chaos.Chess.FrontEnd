@@ -5,6 +5,6 @@ export interface IMoveData {
     fromFile: number;
     destFile: number;
     player: string;
-    isChecked: boolean;
+    isCheck: boolean;
     isPinned: boolean;
 }

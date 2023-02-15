@@ -14,7 +14,8 @@ export class KnighRules extends Rules {
 
         // illegal move
         let availableMoves: string[] = this.populateAvailableMoves(move);
-        if (!availableMoves.some(x => `${String.fromCharCode(move.destFile)}${move.destRank}`))
+        let targetSpace = `${String.fromCharCode(move.destFile)}${move.destRank}`;
+        if (!availableMoves.some(x => x == targetSpace))
             return false;
 
         // blocked

@@ -66,11 +66,11 @@ export class PawnRules extends Rules {
         let i = moveData.fromRank;
         while (i != moveData.destRank) {
             if (moveData.destRank > moveData.fromRank) {
-                path.push(`${moveData.fromFile}${i + 1}`);
+                path.push(`${String.fromCharCode(moveData.fromFile)}${i + 1}`);
                 i++;
             }
             else {
-                path.push(`${moveData.fromFile}${i - 1}`);
+                path.push(`${String.fromCharCode(moveData.fromFile)}${i - 1}`);
                 i--;
             }
         }

@@ -6,17 +6,17 @@ export class QueenRules extends Rules {
     constructor(board: string) {
         super(board);
     }
-    validateMove(move: IMoveData): boolean {
+    validateMove(moveData: IMoveData): boolean {
         // out of bounds 
-        if (this.outOfBounds(move))
-            return false;
-
-        // blocked 
-        if (this.isBlocked(move))
+        if (this.outOfBounds(moveData))
             return false;
 
         // illegal moves
-        if (Math.abs(move.destFile - move.fromFile) != Math.abs(move.destRank - move.fromRank) && ((Math.abs(move.destRank - move.fromRank) > 0 && Math.abs(move.destFile - move.fromFile) != 0) || (Math.abs(move.destRank - move.fromRank) != 0 && Math.abs(move.destFile - move.fromFile) > 0)))
+        if (Math.abs(moveData.destFile - moveData.fromFile) != Math.abs(moveData.destRank - moveData.fromRank) && ((Math.abs(moveData.destRank - moveData.fromRank) > 0 && Math.abs(moveData.destFile - moveData.fromFile) != 0) || (Math.abs(moveData.destRank - moveData.fromRank) != 0 && Math.abs(moveData.destFile - moveData.fromFile) > 0)))
+            return false;
+
+        // blocked 
+        if (this.isBlocked(moveData))
             return false;
 
         return true;
@@ -51,12 +51,13 @@ export class QueenRules extends Rules {
             let i = isVertical ? moveData.fromRank : moveData.fromFile;
             while (isVertical ? i != moveData.destRank : i != moveData.destFile) {
                 if (isVertical) {
+                    let file = String.fromCharCode(moveData.fromFile)
                     if (moveData.destRank > moveData.fromRank) {
-                        path.push(`${moveData.fromFile}${i + 1}`);
+                        path.push(`${file}${i + 1}`);
                         i++;
                     }
                     else {
-                        path.push(`${moveData.fromFile}${i - 1}`);
+                        path.push(`${file}${i - 1}`);
                         i--;
                     }
                 } else {

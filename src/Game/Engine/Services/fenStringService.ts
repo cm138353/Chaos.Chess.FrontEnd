@@ -1,30 +1,52 @@
-import { GameRulesService } from './gameRulesService';
+import _ from "lodash";
+import { IUpdateFenString } from "./Models/updateFenString";
+
 export class FenStringService {
 
-    public static update(fen: string, from: string, dest: string, isCapture: boolean, promotion?: string): string {
-        let piece = from.charAt(0);
-        let board = fen.split(" ")[0];
-        let boardStatus = fen.split(" ").slice(1);
-        let replace = this.moveFrom(board, from);
-        replace = this.moveDest(replace, dest, piece);
-        fen = fen.replace(board, replace);
+    public static update(update: IUpdateFenString): string {
+        let piece = update.from.charAt(0);
+        let board = update.fen.split(" ")[0];
+        let boardStatus = update.fen.split(" ").slice(1);
 
         let spaces = 0;
         if (piece.toLowerCase() == "p")
-            spaces = Math.abs(+from.charAt(2) - +dest.charAt(1));
+            spaces = Math.abs(+update.from.charAt(2) - +update.dest.charAt(1));
         else if (piece.toLowerCase() == "k")
-            spaces = Math.abs((from.charCodeAt(1) - dest.charCodeAt(0)));
+            spaces = Math.abs((update.from.charCodeAt(1) - update.dest.charCodeAt(0)));
 
-        this.updateBoardStatus(boardStatus, from, spaces, isCapture);
+        let replace = this.moveFrom(board, update.from);
+        replace = this.moveDest(replace, update.dest, piece);
+        if (piece.toLowerCase() == "k" && spaces == 2) {
+            let isKingSide = update.dest.charCodeAt(0) - update.from.charCodeAt(1) > 0;
+            let rookFrom: string;
+            let rookDest: string;
+            let isWhite = piece.toUpperCase() == piece;
+            if (isKingSide) {
+                rookFrom = isWhite ? "Rh1" : "rh8";
+                rookDest = isWhite ? "f1" : "f8";
+            }
+            else {
+                rookFrom = isWhite ? "Ra1" : "ra8";
+                rookDest = isWhite ? "d1" : "d8";
+            }
 
-        return fen;
+            replace = this.moveFrom(replace, rookFrom);
+            replace = this.moveDest(replace, rookDest, isWhite ? "R" : "r");
+        }
+        update.fen = update.fen.replace(board, replace);
+
+        let replaceBoardStatus = this.updateBoardStatus(boardStatus, update.from, spaces, update.isCapture);
+
+        update.fen = update.fen.replace(boardStatus.join(" "), replaceBoardStatus);
+
+        return update.fen;
     }
 
     private static getTargetIndex(rank: string[], file: string, isFrom: boolean): number {
         let counter = 0;
         let index = -1;
         for (const space of rank) {
-            if (Number.isInteger(+space)) {
+            if (_.isFinite(+space)) {
                 let number = +space;
                 counter += number;
             }
@@ -48,20 +70,20 @@ export class FenStringService {
         // index is not on the edges of the array
         if (index != boardFromRank.length - 1 && index != 0) {
             // is there a number to the right only
-            if (Number.isNaN(+boardFromRank[index - 1]) && Number.isInteger(+boardFromRank[index + 1])) {
+            if (_.isNaN(+boardFromRank[index - 1]) && _.isFinite(+boardFromRank[index + 1])) {
                 buildFromRank.push(...[...boardFromRank.slice(0, index), `${+boardFromRank[index + 1] + 1}`]);
                 if (index + 1 != boardFromRank.length - 1)
                     buildFromRank.push(...boardFromRank.slice(index + 2));
             }
             // is there a number to the left only
-            else if (Number.isInteger(+boardFromRank[index - 1]) && Number.isNaN(+boardFromRank[index + 1])) {
+            else if (_.isFinite(+boardFromRank[index - 1]) && _.isNaN(+boardFromRank[index + 1])) {
                 if (index - 1 != 0)
                     buildFromRank.push(...boardFromRank.slice(0, index - 1));
 
                 buildFromRank.push(...[`${+boardFromRank[index - 1] + 1}`, ...boardFromRank.slice(index + 1)])
             }
             // is there a number on both sides
-            else if (Number.isInteger(+boardFromRank[index - 1]) && Number.isInteger(+boardFromRank[index + 1])) {
+            else if (_.isFinite(+boardFromRank[index - 1]) && _.isFinite(+boardFromRank[index + 1])) {
                 if (index - 1 != 0)
                     buildFromRank.push(...boardFromRank.slice(0, index - 1));
 
@@ -71,18 +93,18 @@ export class FenStringService {
                     buildFromRank.push(...boardFromRank.slice(index + 2));
             }
             // there is not a number on either side
-            else if (Number.isNaN(+boardFromRank[index - 1]) && Number.isNaN(+boardFromRank[index + 1])) {
+            else if (_.isNaN(+boardFromRank[index - 1]) && _.isNaN(+boardFromRank[index + 1])) {
                 buildFromRank.push(...[...boardFromRank.slice(0, index), "1", ...boardFromRank.slice(index + 1)]);
             }
         }
         // index is in the beginning of the array 
         else if (index == 0) {
             // is not a number
-            if (Number.isNaN(+boardFromRank[index + 1])) {
+            if (_.isNaN(+boardFromRank[index + 1])) {
                 buildFromRank.push(...["1", ...boardFromRank.slice(index + 1)]);
             }
             // is a number 
-            else if (Number.isInteger(+boardFromRank[index + 1])) {
+            else if (_.isFinite(+boardFromRank[index + 1])) {
                 buildFromRank.push(`${+boardFromRank[index + 1] + 1}`)
                 if (index + 1 != boardFromRank.length - 1)
                     buildFromRank.push(...boardFromRank.slice(index + 2));
@@ -91,11 +113,11 @@ export class FenStringService {
         // index is at the end of the array 
         else if (index == boardFromRank.length - 1) {
             // is not a number
-            if (Number.isNaN(+boardFromRank[index - 1])) {
+            if (_.isNaN(+boardFromRank[index - 1])) {
                 buildFromRank.push(...[...boardFromRank.slice(0, index), "1"]);
             }
             // is a number 
-            else if (Number.isInteger(+boardFromRank[index - 1])) {
+            else if (_.isFinite(+boardFromRank[index - 1])) {
                 if (index - 1 != 0)
                     buildFromRank.push(...boardFromRank.slice(0, index - 1));
                 buildFromRank.push(`${+boardFromRank[index - 1] + 1}`);
@@ -113,7 +135,7 @@ export class FenStringService {
 
         // if space is a 1 or
         // if space is occupied by another piece 
-        if (+boardDestRank[index] == 1 || Number.isNaN(+boardDestRank[index])) {
+        if (+boardDestRank[index] == 1 || _.isNaN(+boardDestRank[index])) {
             if (index != 0)
                 buildDestRank.push(...boardDestRank.slice(0, index));
             buildDestRank.push(piece);
@@ -121,10 +143,19 @@ export class FenStringService {
                 buildDestRank.push(...boardDestRank.slice(index + 1));
         }
         // if space is one of many empty spaces 
-        else if (Number.isInteger(+boardDestRank[index])) {
+        else if (_.isFinite(+boardDestRank[index])) {
             // if dest in the middle
-            let emptySpacesBefore: number = (destFile.charCodeAt(0) - 96) - index - 1;
-            let emptySpacesAfter: number = +boardDestRank[index] - ((destFile.charCodeAt(0) - 96) - index);
+            let counter = 0;
+            for (let i = 0; i < index; i++) {
+                if (_.isFinite(+boardDestRank[i])) {
+                    let number = +boardDestRank[i];
+                    counter += number;
+                }
+                else
+                    counter++;
+            }
+            let emptySpacesBefore: number = (destFile.charCodeAt(0) - 96) - counter - 1;
+            let emptySpacesAfter: number = Math.abs(((destFile.charCodeAt(0) - 96) - counter) - +boardDestRank[index]);
             if (index != 0)
                 buildDestRank.push(...boardDestRank.slice(0, index));
 
@@ -259,7 +290,7 @@ export class FenStringService {
         else
             buildBoardStatus.push(boardStatus[4]);
 
-        return buildBoardStatus.join("");
+        return buildBoardStatus.join(" ");
     }
 
 }
