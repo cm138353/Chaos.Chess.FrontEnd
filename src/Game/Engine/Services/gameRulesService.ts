@@ -32,7 +32,7 @@ export class GameRulesService {
         if (turn != player)
             return false;
 
-        let rules: Rules = PieceRulesFactory.getRules(board, piece, from, dest);
+        let rules: Rules = PieceRulesFactory.getRules(board, piece);
         let moveData: IMoveData = MoveDataFactory.getMoveData(new GetMoveRequest({
             from,
             dest,
@@ -91,6 +91,8 @@ export class GameRulesService {
         let attackers: string[] = [];
         let ranks = board.split(" ")[0].split("/");
         let targetRank: string = ranks[8 - +space.charAt(space.length - 1)];
+
+        // TODO: Move piece specific rules to its designated rule class
 
         // horizontal
         let horizontalAttackers = this.getHorizontalAttackers(targetRank, space.charCodeAt(0), player);

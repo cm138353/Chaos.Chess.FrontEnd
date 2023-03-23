@@ -77,5 +77,8 @@ export class PawnRules extends Rules {
         return this.pathValidator.isPathBlocked(path, moveData.player);
     }
 
+    getStandardOrLongNotation(from: string, dest: string): string {
+        return "";
+    }
 
 }

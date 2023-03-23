@@ -12,7 +12,7 @@ export class Game {
     private turn: string;
 
     constructor(chessFactory: ChessGameFactory) {
-        runTests();
+        // runTests();
         this.game = chessFactory.NewStandardGame();
         this.board = [];
         this.getBoard();

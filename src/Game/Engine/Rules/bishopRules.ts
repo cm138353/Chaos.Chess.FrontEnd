@@ -1,4 +1,5 @@
 import { IMoveData } from "../Services/Models/iMoveData";
+import { getSpaceFromRank, getFileSpaceIndexFromRank } from "../Services/Utility/helpfulFunctions";
 import { Rules } from "./rules";
 
 export class BishopRules extends Rules {
@@ -52,4 +53,18 @@ export class BishopRules extends Rules {
         return this.pathValidator.isPathBlocked(path, moveData.player);
     }
 
+    public getStandardOrLongNotation(from: string, dest: string): string {
+        let piece = from.charAt(0);
+
+        let boardState = this.board.split(" ")[0];
+        let needRank = false;
+        let needFile = false;
+        let diagnal = boardState.split("/");
+        let boardFile = boardState.split("/").map(o => getSpaceFromRank(o, dest.charCodeAt(0)));
+        let boardRank = boardState.split("/")[(8 - +from.charAt(from.length - 1))];
+        let fromFileIndex = getFileSpaceIndexFromRank(boardRank, from.charCodeAt(1));
+
+
+        return "";
+    }
 }

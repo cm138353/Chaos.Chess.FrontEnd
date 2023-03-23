@@ -2,7 +2,7 @@ import { GameStringService } from './Services/gameStringService';
 import { GameRulesService } from './Services/gameRulesService';
 import { ChessGameStringType } from "./Models/chessGameStringType";
 import { GameStatusDto } from '../../NSwag/chess_swagger';
-import { NEW_GAME } from './Conts/consts';
+import { NEW_GAME_FEN } from './Conts/consts';
 import { UpdateFenString } from './Services/Models/updateFenString';
 import { UpdateSanString } from './Services/Models/updateSanString';
 
@@ -15,13 +15,15 @@ export class ChessGame implements IChessGame {
     private _gameStatus: GameStatusDto;
     private _gameRulesService: GameRulesService;
 
-    constructor(board: string = NEW_GAME, chessGameStringType: ChessGameStringType = ChessGameStringType.fen) {
+    constructor(board: string = NEW_GAME_FEN, chessGameStringType: ChessGameStringType = ChessGameStringType.fen) {
         switch (chessGameStringType) {
             case ChessGameStringType.san:
                 this._gameSan = board;
+                this._gameFen = "";
                 break;
             case ChessGameStringType.fen:
                 this._gameFen = board;
+                this._gameSan = "";
             default:
                 this._gameFen = board;
         }

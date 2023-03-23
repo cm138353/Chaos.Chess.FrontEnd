@@ -19,4 +19,5 @@ export abstract class Rules {
 
         return false;
     }
+    abstract getStandardOrLongNotation(from: string, dest: string): string;
 }

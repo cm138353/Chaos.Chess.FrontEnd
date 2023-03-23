@@ -59,4 +59,9 @@ export class KnighRules extends Rules {
             availableMoves.push(`${String.fromCharCode(move.fromFile - 1)}${move.fromRank - 2}`);
         return availableMoves;
     }
+
+    getStandardOrLongNotation(from: string, dest: string): string {
+        return "";
+    }
+
 }

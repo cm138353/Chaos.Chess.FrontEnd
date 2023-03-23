@@ -7,7 +7,7 @@ import { RookRules } from "../../Rules/rookRules";
 
 export class PieceRulesFactory {
 
-    public static getRules(board: string, piece: string, from: string, dest: string) {
+    public static getRules(board: string, piece: string) {
         switch (piece) {
             case "p":
                 return new PawnRules(board);
