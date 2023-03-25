@@ -1,5 +1,7 @@
+import { GeneralMoveData } from '../Services/Models/generalMoveData';
 import { IMoveData } from '../Services/Models/iMoveData';
 import { PawnMoveData } from '../Services/Models/pawnMoveData';
+import { getFileSpaceIndexFromRank, getSpaceFromRank } from '../Services/Utility/helpfulFunctions';
 import { Rules } from './rules';
 
 export class PawnRules extends Rules {
@@ -76,9 +78,4 @@ export class PawnRules extends Rules {
         }
         return this.pathValidator.isPathBlocked(path, moveData.player);
     }
-
-    getStandardOrLongNotation(from: string, dest: string): string {
-        return "";
-    }
-
 }

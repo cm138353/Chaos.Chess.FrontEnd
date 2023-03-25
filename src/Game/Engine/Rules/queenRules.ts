@@ -76,8 +76,15 @@ export class QueenRules extends Rules {
         return this.pathValidator.isPathBlocked(path, moveData.player);
     }
 
-    getStandardOrLongNotation(from: string, dest: string): string {
+    public getStandardOrLongNotation(from: string, dest: string): string {
         return "";
+    }
+
+    protected getNeedRank(boardFile: string[], from: string, dest: string): boolean {
+        throw new Error("Method not implemented.");
+    }
+    protected getNeedFile(boardRank: string, from: string, dest: string): boolean {
+        throw new Error("Method not implemented.");
     }
 
 }

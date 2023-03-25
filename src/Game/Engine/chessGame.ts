@@ -50,7 +50,6 @@ export class ChessGame implements IChessGame {
         let piece = from.charAt(0);
         let colorOfPiece = piece.charAt(0) == piece.charAt(0).toUpperCase() ? "w" : "b";
         let isCapture = this._gameRulesService.isCapture(this._gameFen, dest, colorOfPiece);
-        let copyOfFen = this._gameFen;
         this._gameFen = GameStringService.updateFen(new UpdateFenString({ fen: this.gameFen, from, dest, promotion, isCapture }));
 
         this._gameRulesService.evaluateBoard(colorOfPiece, this._gameFen);

@@ -47,9 +47,4 @@ export class KingRules extends Rules {
 
         return this.pathValidator.isPathBlocked(path, moveData.player);
     }
-
-    public getStandardOrLongNotation(from: string, dest: string): string {
-        return "";
-    }
-
 }

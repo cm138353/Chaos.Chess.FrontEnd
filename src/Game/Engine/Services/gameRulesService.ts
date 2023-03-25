@@ -31,6 +31,8 @@ export class GameRulesService {
         let turn = board.split(" ")[1];
         if (turn != player)
             return false;
+        if (from.slice(1) == dest)
+            return false;
 
         let rules: Rules = PieceRulesFactory.getRules(board, piece);
         let moveData: IMoveData = MoveDataFactory.getMoveData(new GetMoveRequest({

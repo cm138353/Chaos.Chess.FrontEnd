@@ -1,4 +1,6 @@
+import { GeneralMoveData } from './../Services/Models/generalMoveData';
 import { IMoveData } from "../Services/Models/iMoveData";
+import { getFileSpaceIndexFromRank, getSpaceFromRank } from "../Services/Utility/helpfulFunctions";
 import { Rules } from "./rules";
 
 export class KnighRules extends Rules {
@@ -59,9 +61,4 @@ export class KnighRules extends Rules {
             availableMoves.push(`${String.fromCharCode(move.fromFile - 1)}${move.fromRank - 2}`);
         return availableMoves;
     }
-
-    getStandardOrLongNotation(from: string, dest: string): string {
-        return "";
-    }
-
 }

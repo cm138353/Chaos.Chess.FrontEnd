@@ -1,5 +1,6 @@
+import { GeneralMoveData } from './../Services/Models/generalMoveData';
 import { IMoveData } from "../Services/Models/iMoveData";
-import { getSpaceFromRank, getFileSpaceIndexFromRank } from "../Services/Utility/helpfulFunctions";
+import { getSpaceFromRank, getFileSpaceIndexFromRank, getColorOfSpace } from "../Services/Utility/helpfulFunctions";
 import { Rules } from "./rules";
 
 export class BishopRules extends Rules {
@@ -26,7 +27,6 @@ export class BishopRules extends Rules {
     }
 
     protected isBlocked(moveData: IMoveData): boolean {
-
         let path = [];
         let currRank = moveData.fromRank;
         let currFile = moveData.fromFile;
@@ -34,37 +34,22 @@ export class BishopRules extends Rules {
             if (moveData.destRank > moveData.fromRank) {
                 if (moveData.destFile > moveData.fromFile) {
                     path.push(`${String.fromCharCode(currFile + 1)}${++currRank}`);
-                    currFile = currFile + 1;
+                    currFile += 1;
                 } else {
                     path.push(`${String.fromCharCode(currFile - 1)}${++currRank}`);
-                    currFile = currFile - 1;
+                    currFile -= 1;
                 }
             } else {
                 if (moveData.destFile > moveData.fromFile) {
                     path.push(`${String.fromCharCode(currFile + 1)}${--currRank}`);
-                    currFile = currFile + 1;
+                    currFile += + 1;
                 } else {
                     path.push(`${String.fromCharCode(currFile - 1)}${--currRank}`);
-                    currFile = currFile - 1;
+                    currFile -= 1;
                 }
             }
         }
 
         return this.pathValidator.isPathBlocked(path, moveData.player);
-    }
-
-    public getStandardOrLongNotation(from: string, dest: string): string {
-        let piece = from.charAt(0);
-
-        let boardState = this.board.split(" ")[0];
-        let needRank = false;
-        let needFile = false;
-        let diagnal = boardState.split("/");
-        let boardFile = boardState.split("/").map(o => getSpaceFromRank(o, dest.charCodeAt(0)));
-        let boardRank = boardState.split("/")[(8 - +from.charAt(from.length - 1))];
-        let fromFileIndex = getFileSpaceIndexFromRank(boardRank, from.charCodeAt(1));
-
-
-        return "";
     }
 }
